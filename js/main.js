@@ -86,6 +86,8 @@ function loadoutCard(lo) {
     if (isVideo) {
       mediaEl = document.createElement("video");
       mediaEl.src = lo.image;
+      // Use a same-named .png (if present) as the resting frame.
+      mediaEl.poster = lo.image.replace(/\.(mp4|webm|mov|ogg)(\?.*)?$/i, ".png");
       mediaEl.muted = true;
       mediaEl.loop = true;
       mediaEl.playsInline = true;
