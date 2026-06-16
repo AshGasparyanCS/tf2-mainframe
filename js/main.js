@@ -70,14 +70,26 @@ function escapeAttr(s) {
 function loadoutCard(lo) {
   const card = el("article", "card " + classSlug(lo.class));
   const media = el("div", "card-media");
+  // The class-colored placeholder is always present underneath.
+  media.appendChild(el("div", "media-placeholder", "<span>" + lo.class + "</span>"));
   if (lo.image) {
-    const img = el("img");
+    // The real screenshot sits on top, hidden until hover (crossfade).
+    const reveal = el("div", "media-reveal");
+    const img = document.createElement("img");
     img.src = lo.image;
-    img.alt = lo.name;
+    img.alt = lo.name + " loadout";
     img.loading = "lazy";
-    media.appendChild(img);
-  } else {
-    media.appendChild(el("div", "media-placeholder", "<span>" + lo.class + "</span>"));
+    // If the file isn't there yet, quietly fall back to just the placeholder.
+    img.addEventListener("error", function () {
+      media.classList.remove("has-reveal");
+      reveal.remove();
+      hint.remove();
+    });
+    reveal.appendChild(img);
+    media.appendChild(reveal);
+    const hint = el("div", "reveal-hint", "Hover to reveal");
+    media.appendChild(hint);
+    media.classList.add("has-reveal");
   }
   card.appendChild(media);
 

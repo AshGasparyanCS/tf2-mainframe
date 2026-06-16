@@ -34,6 +34,25 @@ Open `js/data.js` and add an entry to the `LOADOUTS` array:
 
 Drop screenshots in the `assets/` folder and point `image` at them.
 
+### Loadout screenshots (hover-to-reveal)
+
+Each card shows a class-colored placeholder by default and **fades to the real
+screenshot when you hover** over it. To turn it on, just save your images into
+the `assets/` folder with these exact names:
+
+```
+assets/scout.png      assets/engineer.png
+assets/soldier.png    assets/medic.png
+assets/pyro.png       assets/sniper.png
+assets/demoman.png    assets/spy.png
+assets/heavy.png
+```
+
+The `image:` paths are already set in `js/data.js`, so the moment a file is in
+place it works. If a file is missing, that card simply keeps its placeholder —
+nothing breaks. (Using `.jpg` instead of `.png`? Just change the extension in
+that loadout's `image:` field in `js/data.js`.)
+
 ## How to add a blog post
 
 In `js/data.js`, add an entry to the `POSTS` array:

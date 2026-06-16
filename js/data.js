@@ -18,7 +18,7 @@ const LOADOUTS = [
     name: "The Aviator",
     class: "Scout",
     featured: true,
-    image: "",
+    image: "assets/scout.png",
     blurb: "faster faster faster",
     items: ["Scattergun", { name: "\"flight reacts\"", wiki: "Winger" }, "Three-Rune Blade", { name: "\"And Everything Dies...\"", wiki: "Co-Pilot" }, "Dead of Night", "Buck Turner All-Stars", "Fancy Spellbook"],
     notes: "Can you tell I like pilot caps?"
@@ -28,7 +28,7 @@ const LOADOUTS = [
     name: "Whirlybird",
     class: "Soldier",
     featured: false,
-    image: "",
+    image: "assets/soldier.png",
     blurb: "rock-it launcher",
     items: [{ name: "\"r.i.p. quake champions\"", wiki: "Original" }, "Red Bear Shotgun", { name: "\"uber everywhere\"", wiki: "Escape Plan" }, "Whirly Warrior", "Pocket Medic", "Dead of Night", "Fancy Spellbook"],
     notes: "money on my mind, money money on my mind"
@@ -38,7 +38,7 @@ const LOADOUTS = [
     name: "Light Bug",
     class: "Pyro",
     featured: false,
-    image: "",
+    image: "assets/pyro.png",
     blurb: "these glasses don't do anything",
     items: [{ name: "\"eminem raps so fast\"", wiki: "Degreaser" }, { name: "\"Beirut\"", wiki: "Detonator" }, { name: "\"Last ditch effort\"", wiki: "Powerjack" }, "Graybanns", "Dead of Night", "Electric Escorter"],
     notes: "she looks at me across the boardwalk"
@@ -48,7 +48,7 @@ const LOADOUTS = [
     name: "Demo Guy",
     class: "Demoman",
     featured: true,
-    image: "",
+    image: "assets/demoman.png",
     blurb: "im floated",
     items: [{ name: "\"Iron Bummer\"", wiki: "Iron Bomber" }, "Sticky Jumper", "Scottish Handshake", "Tavish DeGroot Experience", "Dead of Night", "License to Maim"],
     notes: "i rock i roll i bloom i glow."
@@ -58,7 +58,7 @@ const LOADOUTS = [
     name: "Hey Tony",
     class: "Heavy",
     featured: true,
-    image: "",
+    image: "assets/heavy.png",
     blurb: "tough ass guy with cigar",
     items: ["Tomislav", { name: "\"waste management\"", wiki: "Family Business" }, { name: "\"less damage than stock\"", wiki: "Eviction Notice" }, "Dead of Night", "Cuban Bristle Crisis", "License to Maim"],
     notes: "Cuban missle crisis!."
@@ -68,7 +68,7 @@ const LOADOUTS = [
     name: "Dapper Texan",
     class: "Engineer",
     featured: false,
-    image: "",
+    image: "assets/engineer.png",
     blurb: "its hot outside",
     items: [{ name: "\"whoopty\"", wiki: "Rescue Ranger" }, "Giger Counter", "Wrench", { name: "\"SEG_FAULT\"", wiki: "Construction PDA" }, "Insulated Inventor", { name: "\"Last Christmas\"", wiki: "A Well Wrapped Hat" }, "Clubsy the Seal", "Fancy Spellbook"],
     notes: "seg fault get it cuz code lol."
@@ -78,7 +78,7 @@ const LOADOUTS = [
     name: "The Combat Medic",
     class: "Medic",
     featured: false,
-    image: "",
+    image: "assets/medic.png",
     blurb: "what else am I gonna equip",
     items: ["Festive Crusader's Crossbow", { name: "\"Im with ya, lets do this!\"", wiki: "Medi Gun" }, "Festive Übersaw", "Combat Medic's Crusher Cap", "Dead of Night", "Unknown Mann", "Power Up Canteen"],
     notes: "Uber everywhere."
@@ -88,7 +88,7 @@ const LOADOUTS = [
     name: "Archer-o",
     class: "Sniper",
     featured: false,
-    image: "",
+    image: "assets/sniper.png",
     blurb: "120 damage demon",
     items: ["Festive Huntsman", "Festive SMG", { name: "\"destroy lonley\"", wiki: "Kukri" }, "Your Worst Nightmare", "Dead of Night", "Flashdance Footies"],
     notes: "if looks could krill."
@@ -98,7 +98,7 @@ const LOADOUTS = [
     name: "Sam and Max",
     class: "Spy",
     featured: false,
-    image: "",
+    image: "assets/spy.png",
     blurb: "R-99 here",
     items: ["Big Kill", "Festive Knife", "Cloak and Dagger", "Festive Sapper", "A Hat to Kill For", "Dead of Night", "Flashdance Footies", "Fancy Spellbook"],
     notes: "PLease be paper mario."
