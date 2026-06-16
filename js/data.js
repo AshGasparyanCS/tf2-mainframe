@@ -15,53 +15,53 @@
 const LOADOUTS = [
   {
     id: "scout-loadout",
-    name: "",                 // TODO: name your set
+    name: "The Aviator",
     class: "Scout",
     featured: true,
     image: "",
-    blurb: "",                // TODO: witty one-liner (see prompts)
-    items: [],                // TODO: ["Hat", "Misc", "Weapon", ...]
-    notes: ""                 // optional: why you run it
+    blurb: "Goggles on, brain off, sneakers squeaking.",
+    items: ["Scattergun", "\"flight reacts\"", "Three-Rune Blade", "\"And Everything Dies...\"", "Dead of Night", "Buck Turner All-Stars", "Fancy Spellbook"],
+    notes: "Renamed the pistol \"flight reacts\" and never looked back."
   },
   {
     id: "soldier-loadout",
-    name: "",
+    name: "Whirlybird",
     class: "Soldier",
     featured: true,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "R.I.P. Quake Champions — long live splash damage.",
+    items: ["\"r.i.p. quake champions\"", "Red Bear Shotgun", "\"uber everywhere\"", "Whirly Warrior", "Pocket Medic", "Dead of Night", "Fancy Spellbook"],
+    notes: "The Pocket Medic cosmetic is basically a personality at this point."
   },
   {
     id: "pyro-loadout",
-    name: "",
+    name: "Too Cool to Burn",
     class: "Pyro",
     featured: true,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "Shades on. Spies off. Never looks at the explosion.",
+    items: ["\"eminem raps so fast\"", "\"Beirut\"", "\"Last ditch effort\"", "Graybanns", "Dead of Night", "Electric Escorter"],
+    notes: "\"eminem raps so fast\" is, in fact, fast."
   },
   {
     id: "demoman-loadout",
-    name: "",
+    name: "Demolition Sheriff",
     class: "Demoman",
     featured: false,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "Got a badge, a bottle, and bad intentions.",
+    items: ["\"Iron Bummer\"", "Sticky Jumper", "Scottish Handshake", "Tavish DeGroot Experience", "Dead of Night", "License to Maim"],
+    notes: "Sticky Jumper is purely for getting onto roofs I have no business being on."
   },
   {
     id: "heavy-loadout",
-    name: "",
+    name: "The Bearded Wall",
     class: "Heavy",
     featured: false,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "Less damage than stock. More fun than legal.",
+    items: ["Tomislav", "\"waste management\"", "\"less damage than stock\"", "Dead of Night", "Cuban Bristle Crisis", "License to Maim"],
+    notes: "The Cuban Bristle Crisis beard does most of the intimidating for me."
   },
   {
     id: "engineer-loadout",
