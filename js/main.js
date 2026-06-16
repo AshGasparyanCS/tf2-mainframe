@@ -15,6 +15,44 @@ function classSlug(c) {
   return "cls-" + c.toLowerCase();
 }
 
+function wikiUrl(name) {
+  return "https://wiki.teamfortress.com/wiki/" +
+    encodeURI(String(name).trim().replace(/\s+/g, "_"));
+}
+
+// Build one item chip. An item can be:
+//   "Scattergun"                         -> links to the wiki
+//   { name: "flight reacts", wiki: "Pistol" }  -> shows your name, links to "Pistol"
+// Names wrapped in quotes are treated as custom renames and are NOT linked
+// (they wouldn't resolve on the wiki) unless you give an explicit wiki target.
+function itemChip(it) {
+  let label, wiki, link;
+  if (it && typeof it === "object") {
+    label = it.name;
+    wiki = it.wiki || it.name;
+    link = true;
+  } else {
+    label = String(it);
+    link = !/^\s*["']/.test(label);
+    wiki = label;
+  }
+  const li = document.createElement("li");
+  let chip;
+  if (link) {
+    chip = document.createElement("a");
+    chip.href = wikiUrl(wiki);
+    chip.target = "_blank";
+    chip.rel = "noopener noreferrer";
+    chip.title = "View “" + wiki + "” on the TF2 Wiki";
+  } else {
+    chip = document.createElement("span");
+  }
+  chip.className = "chip" + (link ? " item-link" : "");
+  chip.textContent = label;
+  li.appendChild(chip);
+  return li;
+}
+
 function formatDate(iso) {
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
@@ -50,7 +88,7 @@ function loadoutCard(lo) {
 
   if (lo.items && lo.items.length) {
     const ul = el("ul", "item-list");
-    lo.items.forEach((it) => ul.appendChild(el("li", null, it)));
+    lo.items.forEach((it) => ul.appendChild(itemChip(it)));
     body.appendChild(ul);
   }
   if (lo.notes) body.appendChild(el("p", "card-notes", lo.notes));

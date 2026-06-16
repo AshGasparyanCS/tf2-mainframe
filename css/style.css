@@ -253,12 +253,25 @@ h1, h2, h3 {
   margin: 0; padding: 0; list-style: none;
   display: flex; flex-wrap: wrap; gap: 0.35rem;
 }
-.item-list li {
+.item-list .chip {
+  display: inline-block;
   background: var(--paper-2);
   border: 1px solid var(--line);
   border-radius: 3px;
   padding: 0.18rem 0.5rem;
   font-size: 0.8rem;
+  color: var(--ink);
+}
+a.chip.item-link {
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 2px solid var(--accent);
+}
+a.chip.item-link:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  text-decoration: none;
 }
 .card-notes {
   margin: 0.3rem 0 0;
