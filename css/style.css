@@ -382,6 +382,79 @@ code {
 
 .empty, .loading { color: var(--ink-soft); font-style: italic; }
 
+/* ---------- comments ---------- */
+.comments {
+  max-width: 740px;
+  margin: 1rem auto 0;
+  padding: 1.5rem;
+}
+.comments-title {
+  color: var(--red-dark);
+  font-size: 1.5rem;
+  border-bottom: 3px solid var(--line);
+  padding-bottom: 0.4rem;
+}
+.comments-count { color: var(--ink-soft); font-size: 1rem; }
+.comments-status { color: var(--ink-soft); font-style: italic; }
+.comments-status.err { color: var(--red-dark); }
+
+.comment-form {
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  margin: 1rem 0 1.8rem;
+  box-shadow: var(--shadow);
+}
+.c-row { margin-bottom: 0.6rem; }
+.c-name, .c-body {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  padding: 0.6rem 0.7rem;
+}
+.c-name:focus, .c-body:focus { outline: none; border-color: var(--orange); }
+.c-body { resize: vertical; }
+/* honeypot — hidden from real users */
+.c-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.c-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 0.7rem;
+}
+.c-msg { font-size: 0.85rem; color: var(--ink-soft); margin-right: auto; }
+.c-msg.err { color: var(--red-dark); }
+
+.comment-list { display: flex; flex-direction: column; gap: 0.9rem; }
+.comment {
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+}
+.comment-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.3rem;
+}
+.comment-name {
+  font-family: var(--font-head);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--red-dark);
+  letter-spacing: 0.5px;
+}
+.comment-time { font-size: 0.72rem; color: var(--ink-soft); }
+.comment-body { margin: 0; white-space: pre-wrap; word-break: break-word; }
+
 /* ---------- footer ---------- */
 .site-footer {
   margin-top: 3rem;

@@ -148,6 +148,9 @@ function renderSinglePost() {
     article.appendChild(tags);
   }
   article.appendChild(el("div", "post-content", post.body));
+
+  // load the comments section for this post (if comments.js is present)
+  if (typeof renderComments === "function") renderComments(post.id);
 }
 
 // ---- shared chrome (runs on every page) ----

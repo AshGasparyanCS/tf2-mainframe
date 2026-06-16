@@ -14,54 +14,94 @@
 */
 const LOADOUTS = [
   {
-    id: "summer-scout",
-    name: "Summer Scout",
+    id: "scout-loadout",
+    name: "",                 // TODO: name your set
     class: "Scout",
     featured: true,
     image: "",
-    blurb: "Fast, loud, and dressed like he's late for a beach party.",
-    items: ["Bonk Boy", "Flipped Trilby", "Summer Shades", "Force-A-Nature", "Bonk! Atomic Punch"],
-    notes: "My go-to for casual. The Force-A-Nature double jump is too much fun to give up."
+    blurb: "",                // TODO: witty one-liner (see prompts)
+    items: [],                // TODO: ["Hat", "Misc", "Weapon", ...]
+    notes: ""                 // optional: why you run it
   },
   {
-    id: "war-painter-soldier",
-    name: "The War Painter",
+    id: "soldier-loadout",
+    name: "",
     class: "Soldier",
     featured: true,
     image: "",
-    blurb: "All business. The business is rockets.",
-    items: ["Tyrant's Helm", "Soldier's Stash", "Suomuna", "Original", "Gunboats", "Escape Plan"],
-    notes: "Gunboats + Escape Plan so I can rocket jump across the map and still bail when it goes wrong."
+    blurb: "",
+    items: [],
+    notes: ""
   },
   {
-    id: "mann-of-the-house",
-    name: "Mann of the House",
-    class: "Engineer",
+    id: "pyro-loadout",
+    name: "",
+    class: "Pyro",
     featured: true,
     image: "",
-    blurb: "Builds dispensers, vibes immaculate.",
-    items: ["Texas Ten Gallon", "Trash Man", "Wrangler", "Rescue Ranger"],
-    notes: "Wrangler for last-point holds. Rescue Ranger keeps the sentry alive from across the room."
+    blurb: "",
+    items: [],
+    notes: ""
   },
   {
-    id: "field-medic",
-    name: "Field Medic",
+    id: "demoman-loadout",
+    name: "",
+    class: "Demoman",
+    featured: false,
+    image: "",
+    blurb: "",
+    items: [],
+    notes: ""
+  },
+  {
+    id: "heavy-loadout",
+    name: "",
+    class: "Heavy",
+    featured: false,
+    image: "",
+    blurb: "",
+    items: [],
+    notes: ""
+  },
+  {
+    id: "engineer-loadout",
+    name: "",
+    class: "Engineer",
+    featured: false,
+    image: "",
+    blurb: "",
+    items: [],
+    notes: ""
+  },
+  {
+    id: "medic-loadout",
+    name: "",
     class: "Medic",
     featured: false,
     image: "",
-    blurb: "Clean, classic, keeps your pocket alive.",
-    items: ["Vintage Tyrolean", "Gauzed Gaze", "Kritzkrieg", "Ubersaw"],
-    notes: "Kritzkrieg over stock Uber on offense. The Ubersaw uber-on-hit is non-negotiable."
+    blurb: "",
+    items: [],
+    notes: ""
   },
   {
-    id: "outback-sniper",
-    name: "Outback Sniper",
+    id: "sniper-loadout",
+    name: "",
     class: "Sniper",
     featured: false,
     image: "",
-    blurb: "From the land down under, here to ruin your day.",
-    items: ["Larrikin Robin", "Crocodile Smile", "Hitman's Heatmaker", "Jarate", "Bushwacka"],
-    notes: "Jarate + Bushwacka combo for when someone gets too close."
+    blurb: "",
+    items: [],
+    notes: ""
+  },
+  {
+    id: "spy-loadout",
+    name: "",
+    class: "Spy",
+    featured: false,
+    image: "",
+    blurb: "",
+    items: [],
+    notes: ""
   }
 ];
 
