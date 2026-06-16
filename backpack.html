@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Post — Mann Co. Mainframe</title>
+  <title>My Backpack — Mann Co. Mainframe</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Mann Co. Mainframe" />
-  <meta property="og:title" content="Blog — Mann Co. Mainframe" />
-  <meta property="og:description" content="A blog post on Mann Co. Mainframe." />
+  <meta property="og:title" content="My Backpack — Mann Co. Mainframe" />
+  <meta property="og:description" content="A showcase of my prized TF2 items, color-coded by quality." />
+  <meta property="og:url" content="https://ashgasparyancs.github.io/tf2-mainframe/backpack.html" />
   <meta property="og:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Blog — Mann Co. Mainframe" />
-  <meta name="twitter:description" content="A blog post on Mann Co. Mainframe." />
   <meta name="twitter:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
 </head>
 <body>
@@ -28,20 +27,21 @@
       <a href="index.html">Home</a>
       <a href="loadouts.html">Loadouts</a>
       <a href="blog.html">Blog</a>
-      <a href="fun.html">Fun</a>
+      <a href="fun.html" class="active">Fun</a>
       <a href="about.html">About</a>
     </nav>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
   </header>
 
   <main>
-    <article class="post" id="post-article">
-      <p class="loading">Loading post…</p>
-    </article>
-    <section class="comments" id="comments"></section>
-    <div class="back-link">
-      <a class="btn btn-ghost" href="blog.html">← Back to all posts</a>
-    </div>
+    <section class="page-head">
+      <h1>My Backpack</h1>
+      <p class="lead">10 years of trading, a few things worth bragging about.</p>
+    </section>
+
+    <section class="section">
+      <div class="backpack-grid" id="backpack-grid"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -49,9 +49,9 @@
   </footer>
 
   <script src="js/data.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/comments.js"></script>
+  <script src="js/funpools.js"></script>
   <script src="js/main.js"></script>
-  <script>renderSinglePost();</script>
+  <script src="js/fun.js"></script>
+  <script>renderBackpack();</script>
 </body>
 </html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun — Mann Co. Mainframe</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Mann Co. Mainframe" />
+  <meta property="og:title" content="Fun — Mann Co. Mainframe" />
+  <meta property="og:description" content="Loadout randomizer, crate-opening simulator, and backpack showcase." />
+  <meta property="og:url" content="https://ashgasparyancs.github.io/tf2-mainframe/fun.html" />
+  <meta property="og:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fun — Mann Co. Mainframe" />
+  <meta name="twitter:description" content="Loadout randomizer, crate-opening simulator, and backpack showcase." />
+  <meta name="twitter:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">TF</span>
+      <span class="brand-text">Mann Co. <em>Mainframe</em></span>
+    </a>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html">Home</a>
+      <a href="loadouts.html">Loadouts</a>
+      <a href="blog.html">Blog</a>
+      <a href="fun.html" class="active">Fun</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <h1>Fun &amp; Games</h1>
+      <p class="lead">Pointless toys I made because I could. Enjoy.</p>
+    </section>
+
+    <section class="section">
+      <div class="card-grid">
+        <a class="card fun-card cls-scout" href="randomizer.html">
+          <div class="card-media"><div class="media-placeholder"><span>🎲</span></div></div>
+          <div class="card-body">
+            <h3>Loadout Randomizer</h3>
+            <p class="card-blurb">Roll a totally random loadout for a random class. Reroll until it's cursed.</p>
+          </div>
+        </a>
+        <a class="card fun-card cls-pyro" href="crates.html">
+          <div class="card-media"><div class="media-placeholder"><span>📦</span></div></div>
+          <div class="card-body">
+            <h3>Crate Simulator</h3>
+            <p class="card-blurb">Open Mann Co. crates with zero financial consequences. Chase the Unusual.</p>
+          </div>
+        </a>
+        <a class="card fun-card cls-spy" href="backpack.html">
+          <div class="card-media"><div class="media-placeholder"><span>🎒</span></div></div>
+          <div class="card-body">
+            <h3>My Backpack</h3>
+            <p class="card-blurb">A showcase of my prized items, color-coded by quality.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built in a respawn room. Not affiliated with Valve. © <span id="year"></span></p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

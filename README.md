@@ -73,6 +73,22 @@ In `js/data.js`, add an entry to the `POSTS` array:
 }
 ```
 
+## Fun tools
+
+The **Fun** nav section has three toys:
+
+- **Randomizer** (`randomizer.html`) — rolls a random loadout. Edit the weapon /
+  cosmetic pools in `js/funpools.js`.
+- **Crate Simulator** (`crates.html`) — fake crate openings with rarity grades and
+  a ~2% Unusual chance. Tweak grades/odds/items in `js/funpools.js`.
+- **My Backpack** (`backpack.html`) — a showcase of your prized items. **Edit the
+  `BACKPACK` list in `js/funpools.js`** with your real grails (name, quality,
+  optional effect/value/note).
+
+> Live Steam inventory can't be pulled directly on a static site (Steam's API
+> has no CORS headers), so the backpack is a hand-curated list. That also means
+> you control exactly what's shown.
+
 ## Files
 
 | File          | What it is                                  |
