@@ -1,0 +1,165 @@
+/* ============================================================
+   Rendering + page wiring. You normally won't need to edit this.
+   Content goes in data.js.
+   ============================================================ */
+
+// ---- helpers ----
+function el(tag, cls, html) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html != null) n.innerHTML = html;
+  return n;
+}
+
+function classSlug(c) {
+  return "cls-" + c.toLowerCase();
+}
+
+function formatDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+}
+
+function sortedPosts() {
+  return [...POSTS].sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+function escapeAttr(s) {
+  return String(s).replace(/"/g, "&quot;");
+}
+
+// ---- loadout card ----
+function loadoutCard(lo) {
+  const card = el("article", "card " + classSlug(lo.class));
+  const media = el("div", "card-media");
+  if (lo.image) {
+    const img = el("img");
+    img.src = lo.image;
+    img.alt = lo.name;
+    img.loading = "lazy";
+    media.appendChild(img);
+  } else {
+    media.appendChild(el("div", "media-placeholder", "<span>" + lo.class + "</span>"));
+  }
+  card.appendChild(media);
+
+  const body = el("div", "card-body");
+  body.appendChild(el("span", "class-tag", lo.class));
+  body.appendChild(el("h3", null, lo.name));
+  if (lo.blurb) body.appendChild(el("p", "card-blurb", lo.blurb));
+
+  if (lo.items && lo.items.length) {
+    const ul = el("ul", "item-list");
+    lo.items.forEach((it) => ul.appendChild(el("li", null, it)));
+    body.appendChild(ul);
+  }
+  if (lo.notes) body.appendChild(el("p", "card-notes", lo.notes));
+
+  card.appendChild(body);
+  return card;
+}
+
+// ---- post row ----
+function postRow(p) {
+  const row = el("a", "post-row");
+  row.href = "post.html?id=" + encodeURIComponent(p.id);
+  row.appendChild(el("div", "post-date", formatDate(p.date)));
+  const main = el("div", "post-main");
+  main.appendChild(el("h3", null, p.title));
+  if (p.excerpt) main.appendChild(el("p", "post-excerpt", p.excerpt));
+  if (p.tags && p.tags.length) {
+    const tags = el("div", "tag-row");
+    p.tags.forEach((t) => tags.appendChild(el("span", "tag", "#" + t)));
+    main.appendChild(tags);
+  }
+  row.appendChild(main);
+  row.appendChild(el("div", "post-arrow", "→"));
+  return row;
+}
+
+// ---- page renderers ----
+function renderHome() {
+  const feat = LOADOUTS.filter((l) => l.featured);
+  const grid = document.getElementById("featured-loadouts");
+  (feat.length ? feat : LOADOUTS.slice(0, 3)).forEach((l) => grid.appendChild(loadoutCard(l)));
+
+  const list = document.getElementById("latest-posts");
+  sortedPosts().slice(0, 3).forEach((p) => list.appendChild(postRow(p)));
+}
+
+function renderLoadoutsPage() {
+  const classes = ["All", ...Array.from(new Set(LOADOUTS.map((l) => l.class)))];
+  const filterWrap = document.getElementById("class-filter");
+  const grid = document.getElementById("loadout-grid");
+
+  function draw(cls) {
+    grid.innerHTML = "";
+    const list = cls === "All" ? LOADOUTS : LOADOUTS.filter((l) => l.class === cls);
+    if (!list.length) {
+      grid.appendChild(el("p", "empty", "No loadouts here yet."));
+      return;
+    }
+    list.forEach((l) => grid.appendChild(loadoutCard(l)));
+  }
+
+  classes.forEach((c, i) => {
+    const b = el("button", "filter-btn" + (i === 0 ? " active" : ""), c);
+    if (c !== "All") b.classList.add(classSlug(c));
+    b.addEventListener("click", () => {
+      filterWrap.querySelectorAll(".filter-btn").forEach((x) => x.classList.remove("active"));
+      b.classList.add("active");
+      draw(c);
+    });
+    filterWrap.appendChild(b);
+  });
+
+  draw("All");
+}
+
+function renderBlogList() {
+  const list = document.getElementById("blog-list");
+  const posts = sortedPosts();
+  if (!posts.length) {
+    list.appendChild(el("p", "empty", "No posts yet. Check back soon."));
+    return;
+  }
+  posts.forEach((p) => list.appendChild(postRow(p)));
+}
+
+function renderSinglePost() {
+  const article = document.getElementById("post-article");
+  const id = new URLSearchParams(location.search).get("id");
+  const post = POSTS.find((p) => p.id === id);
+
+  if (!post) {
+    article.innerHTML = "";
+    article.appendChild(el("h1", null, "Post not found"));
+    article.appendChild(el("p", null, "That post doesn't exist. Try the <a href='blog.html'>blog index</a>."));
+    return;
+  }
+
+  document.title = post.title + " — Mann Co. Mainframe";
+  article.innerHTML = "";
+  article.appendChild(el("div", "post-date big", formatDate(post.date)));
+  article.appendChild(el("h1", null, post.title));
+  if (post.tags && post.tags.length) {
+    const tags = el("div", "tag-row");
+    post.tags.forEach((t) => tags.appendChild(el("span", "tag", "#" + t)));
+    article.appendChild(tags);
+  }
+  article.appendChild(el("div", "post-content", post.body));
+}
+
+// ---- shared chrome (runs on every page) ----
+(function initChrome() {
+  document.addEventListener("DOMContentLoaded", () => {
+    const yr = document.getElementById("year");
+    if (yr) yr.textContent = new Date().getFullYear();
+
+    const toggle = document.getElementById("nav-toggle");
+    const nav = document.getElementById("site-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", () => nav.classList.toggle("open"));
+    }
+  });
+})();

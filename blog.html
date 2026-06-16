@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Mann Co. Mainframe</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">TF</span>
+      <span class="brand-text">Mann Co. <em>Mainframe</em></span>
+    </a>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html">Home</a>
+      <a href="loadouts.html">Loadouts</a>
+      <a href="blog.html" class="active">Blog</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <h1>Blog</h1>
+      <p class="lead">Random stuff. Read at your own risk.</p>
+    </section>
+
+    <section class="section">
+      <div class="post-list" id="blog-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built in a respawn room. Not affiliated with Valve. © <span id="year"></span></p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>renderBlogList();</script>
+</body>
+</html>

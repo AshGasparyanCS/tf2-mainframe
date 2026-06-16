@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mann Co. Mainframe — Loadouts & Ramblings</title>
+  <meta name="description" content="My TF2 loadouts, blog posts, and assorted nonsense." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">TF</span>
+      <span class="brand-text">Mann Co. <em>Mainframe</em></span>
+    </a>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="loadouts.html">Loadouts</a>
+      <a href="blog.html">Blog</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="kicker">Hats. Words. Questionable opinions.</p>
+        <h1>Welcome to the <span class="hl">Mainframe</span>.</h1>
+        <p class="lead">
+          A home for my Team Fortress 2 loadouts and whatever else is rattling
+          around in my skull. Set ups for every class, plus blog posts about
+          games, life, and other stuff that doesn't matter but I'll type anyway.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="loadouts.html">Browse Loadouts</a>
+          <a class="btn btn-ghost" href="blog.html">Read the Blog</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Featured Loadouts</h2>
+        <a class="see-all" href="loadouts.html">See all →</a>
+      </div>
+      <div class="card-grid" id="featured-loadouts"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Latest Posts</h2>
+        <a class="see-all" href="blog.html">See all →</a>
+      </div>
+      <div class="post-list" id="latest-posts"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built in a respawn room. Not affiliated with Valve. © <span id="year"></span></p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>renderHome();</script>
+</body>
+</html>
