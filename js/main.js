@@ -73,19 +73,39 @@ function loadoutCard(lo) {
   // The class-colored placeholder is always present underneath.
   media.appendChild(el("div", "media-placeholder", "<span>" + lo.class + "</span>"));
   if (lo.image) {
-    // The real screenshot sits on top, hidden until hover (crossfade).
+    // The real media sits on top, hidden until hover (crossfade).
     const reveal = el("div", "media-reveal");
-    const img = document.createElement("img");
-    img.src = lo.image;
-    img.alt = lo.name + " loadout";
-    img.loading = "lazy";
+    const isVideo = /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(lo.image);
     // If the file isn't there yet, quietly fall back to just the placeholder.
-    img.addEventListener("error", function () {
+    const fail = function () {
       media.classList.remove("has-reveal");
       reveal.remove();
       hint.remove();
-    });
-    reveal.appendChild(img);
+    };
+    let mediaEl;
+    if (isVideo) {
+      mediaEl = document.createElement("video");
+      mediaEl.src = lo.image;
+      mediaEl.muted = true;
+      mediaEl.loop = true;
+      mediaEl.playsInline = true;
+      mediaEl.preload = "metadata";
+      mediaEl.setAttribute("aria-label", lo.name + " loadout");
+      mediaEl.addEventListener("error", fail);
+      // Only play while the card is hovered — keeps things light.
+      card.addEventListener("mouseenter", function () {
+        const p = mediaEl.play();
+        if (p && p.catch) p.catch(function () {});
+      });
+      card.addEventListener("mouseleave", function () { mediaEl.pause(); });
+    } else {
+      mediaEl = document.createElement("img");
+      mediaEl.src = lo.image;
+      mediaEl.alt = lo.name + " loadout";
+      mediaEl.loading = "lazy";
+      mediaEl.addEventListener("error", fail);
+    }
+    reveal.appendChild(mediaEl);
     media.appendChild(reveal);
     const hint = el("div", "reveal-hint", "Hover to reveal");
     media.appendChild(hint);

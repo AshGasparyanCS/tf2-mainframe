@@ -50,8 +50,13 @@ assets/heavy.png
 
 The `image:` paths are already set in `js/data.js`, so the moment a file is in
 place it works. If a file is missing, that card simply keeps its placeholder —
-nothing breaks. (Using `.jpg` instead of `.png`? Just change the extension in
-that loadout's `image:` field in `js/data.js`.)
+nothing breaks.
+
+**Animated cards (video):** the cards also support `.mp4` / `.webm`. If you drop
+in, say, `assets/scout.mp4` and set the loadout's `image:` to it, the card plays
+the clip on hover (muted, looping) and pauses when you mouse away — much smaller
+and smoother than a GIF. `.gif` works too. Just match the extension in
+`js/data.js` to whatever file you actually have for that class.
 
 ## How to add a blog post
 
