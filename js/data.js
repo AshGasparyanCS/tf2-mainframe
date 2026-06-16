@@ -65,43 +65,43 @@ const LOADOUTS = [
   },
   {
     id: "engineer-loadout",
-    name: "",
+    name: "Dapper Texan",
     class: "Engineer",
     featured: false,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "Top hat up top, baby seal in the pocket.",
+    items: ["\"whoopty\"", "Giger Counter", "Wrench", "\"SEG_FAULT\"", "Insulated Inventor", "\"Last Christmas\"", "Clubsy the Seal", "Fancy Spellbook"],
+    notes: "Named the PDA \"SEG_FAULT\" because the sentry crashes about as often as my code."
   },
   {
     id: "medic-loadout",
-    name: "",
+    name: "The Combat Medic",
     class: "Medic",
     featured: false,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "Crossbow heals, Übersaw collects. No mercy, only uber.",
+    items: ["Festive Crusader's Crossbow", "\"Im with ya, lets do this!\"", "Festive Übersaw", "Combat Medic's Crusher Cap", "Dead of Night", "Unknown Mann", "Power Up Canteen"],
+    notes: "Festive everything. The Christmas lights do not improve the heal rate, tragically."
   },
   {
     id: "sniper-loadout",
-    name: "",
+    name: "Action Movie Marathon",
     class: "Sniper",
     featured: false,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "Rambo up top, Flashdance on the feet.",
+    items: ["Festive Huntsman", "Festive SMG", "\"destroy lonley\"", "Your Worst Nightmare", "Dead of Night", "Flashdance Footies"],
+    notes: "The kukri is named \"destroy lonley\" and it stays exactly as typed."
   },
   {
     id: "spy-loadout",
-    name: "",
+    name: "Film Noir",
     class: "Spy",
     featured: false,
     image: "",
-    blurb: "",
-    items: [],
-    notes: ""
+    blurb: "A hat to kill for, and a knife to do it with.",
+    items: ["Big Kill", "Festive Knife", "Cloak and Dagger", "Festive Sapper", "A Hat to Kill For", "Dead of Night", "Flashdance Footies", "Fancy Spellbook"],
+    notes: "Cloak and Dagger for sitting in a corner being an absolute menace."
   }
 ];
 
