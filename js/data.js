@@ -19,7 +19,7 @@ const LOADOUTS = [
     class: "Scout",
     featured: true,
     image: "",
-    blurb: "Goggles on, brain off, sneakers squeaking.",
+    blurb: "little mann with steaming hat",
     items: ["Scattergun", "\"flight reacts\"", "Three-Rune Blade", "\"And Everything Dies...\"", "Dead of Night", "Buck Turner All-Stars", "Fancy Spellbook"],
     notes: "Renamed the pistol \"flight reacts\" and never looked back."
   },
@@ -29,7 +29,7 @@ const LOADOUTS = [
     class: "Soldier",
     featured: true,
     image: "",
-    blurb: "R.I.P. Quake Champions — long live splash damage.",
+    blurb: "money on my mind, money money on my mind",
     items: ["\"r.i.p. quake champions\"", "Red Bear Shotgun", "\"uber everywhere\"", "Whirly Warrior", "Pocket Medic", "Dead of Night", "Fancy Spellbook"],
     notes: "The Pocket Medic cosmetic is basically a personality at this point."
   },
@@ -39,7 +39,7 @@ const LOADOUTS = [
     class: "Pyro",
     featured: true,
     image: "",
-    blurb: "Shades on. Spies off. Never looks at the explosion.",
+    blurb: "these glasses don't do anything",
     items: ["\"eminem raps so fast\"", "\"Beirut\"", "\"Last ditch effort\"", "Graybanns", "Dead of Night", "Electric Escorter"],
     notes: "\"eminem raps so fast\" is, in fact, fast."
   },
@@ -49,7 +49,7 @@ const LOADOUTS = [
     class: "Demoman",
     featured: false,
     image: "",
-    blurb: "Got a badge, a bottle, and bad intentions.",
+    blurb: "im floated",
     items: ["\"Iron Bummer\"", "Sticky Jumper", "Scottish Handshake", "Tavish DeGroot Experience", "Dead of Night", "License to Maim"],
     notes: "Sticky Jumper is purely for getting onto roofs I have no business being on."
   },
@@ -59,7 +59,7 @@ const LOADOUTS = [
     class: "Heavy",
     featured: false,
     image: "",
-    blurb: "Less damage than stock. More fun than legal.",
+    blurb: "tough ass guy with cigar",
     items: ["Tomislav", "\"waste management\"", "\"less damage than stock\"", "Dead of Night", "Cuban Bristle Crisis", "License to Maim"],
     notes: "The Cuban Bristle Crisis beard does most of the intimidating for me."
   },
@@ -69,7 +69,7 @@ const LOADOUTS = [
     class: "Engineer",
     featured: false,
     image: "",
-    blurb: "Top hat up top, baby seal in the pocket.",
+    blurb: "its hot outside",
     items: ["\"whoopty\"", "Giger Counter", "Wrench", "\"SEG_FAULT\"", "Insulated Inventor", "\"Last Christmas\"", "Clubsy the Seal", "Fancy Spellbook"],
     notes: "Named the PDA \"SEG_FAULT\" because the sentry crashes about as often as my code."
   },
@@ -79,7 +79,7 @@ const LOADOUTS = [
     class: "Medic",
     featured: false,
     image: "",
-    blurb: "Crossbow heals, Übersaw collects. No mercy, only uber.",
+    blurb: "what else am I gonna equip",
     items: ["Festive Crusader's Crossbow", "\"Im with ya, lets do this!\"", "Festive Übersaw", "Combat Medic's Crusher Cap", "Dead of Night", "Unknown Mann", "Power Up Canteen"],
     notes: "Festive everything. The Christmas lights do not improve the heal rate, tragically."
   },
@@ -89,7 +89,7 @@ const LOADOUTS = [
     class: "Sniper",
     featured: false,
     image: "",
-    blurb: "Rambo up top, Flashdance on the feet.",
+    blurb: "120 damage demon",
     items: ["Festive Huntsman", "Festive SMG", "\"destroy lonley\"", "Your Worst Nightmare", "Dead of Night", "Flashdance Footies"],
     notes: "The kukri is named \"destroy lonley\" and it stays exactly as typed."
   },
@@ -99,7 +99,7 @@ const LOADOUTS = [
     class: "Spy",
     featured: false,
     image: "",
-    blurb: "A hat to kill for, and a knife to do it with.",
+    blurb: "r99 here",
     items: ["Big Kill", "Festive Knife", "Cloak and Dagger", "Festive Sapper", "A Hat to Kill For", "Dead of Night", "Flashdance Footies", "Fancy Spellbook"],
     notes: "Cloak and Dagger for sitting in a corner being an absolute menace."
   }
