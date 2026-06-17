@@ -244,6 +244,240 @@ function bpTile(it) {
   return tag;
 }
 
+/* ---------- Backpack Stats Dashboard ---------- */
+async function renderStats() {
+  const root = document.getElementById("stats-root");
+  if (!root) return;
+  if (typeof STEAM_WORKER_URL === "undefined" || !STEAM_WORKER_URL) {
+    root.innerHTML = "<p class='empty'>Live stats need the Cloudflare Worker configured in js/config.js.</p>";
+    return;
+  }
+  try {
+    const res = await fetch(STEAM_WORKER_URL + "?steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (!data.descriptions || !data.assets) throw new Error("no inventory data");
+
+    // map class -> {quality, type, name, color, icon, market}
+    const byId = {};
+    data.descriptions.forEach(function (d) {
+      let quality = "Unique", type = "Other";
+      (d.tags || []).forEach(function (t) {
+        if (t.category === "Quality") quality = t.localized_tag_name;
+        if (t.category === "Type") type = t.localized_tag_name;
+      });
+      byId[d.classid + "_" + d.instanceid] = {
+        quality: quality, type: type,
+        name: d.market_name || d.name,
+        color: "#" + (d.name_color || "7d6d00"),
+        icon: d.icon_url_large || d.icon_url,
+        market: d.marketable ? d.market_hash_name : null
+      };
+    });
+
+    const total = data.assets.length;
+    const qCount = {}, tCount = {}, unusuals = [];
+    data.assets.forEach(function (a) {
+      const info = byId[a.classid + "_" + a.instanceid];
+      if (!info) return;
+      qCount[info.quality] = (qCount[info.quality] || 0) + 1;
+      tCount[info.type] = (tCount[info.type] || 0) + 1;
+    });
+    Object.keys(byId).forEach(function (k) { if (byId[k].quality === "Unusual") unusuals.push(byId[k]); });
+
+    root.innerHTML = "";
+
+    // headline stat cards
+    const big = el("div", "stat-cards");
+    const cards = [
+      ["Total items", total],
+      ["Unique items", data.descriptions.length],
+      ["Unusuals", qCount["Unusual"] || 0],
+      ["Strange", qCount["Strange"] || 0],
+      ["Genuine", qCount["Genuine"] || 0],
+      ["Haunted", qCount["Haunted"] || 0]
+    ];
+    cards.forEach(function (c) {
+      const card = el("div", "stat-card");
+      card.appendChild(el("div", "stat-num", String(c[1])));
+      card.appendChild(el("div", "stat-lbl", c[0]));
+      big.appendChild(card);
+    });
+    root.appendChild(big);
+
+    // quality breakdown bars
+    root.appendChild(el("h2", "stats-h", "By quality"));
+    root.appendChild(barChart(qCount, total, QUALITY_RANK, function (q) { return QUALITY_COLORS[q] || "#b2b2b2"; }));
+
+    // type breakdown bars (top 8)
+    root.appendChild(el("h2", "stats-h", "By type"));
+    const topTypes = Object.keys(tCount).sort(function (a, b) { return tCount[b] - tCount[a]; }).slice(0, 8);
+    root.appendChild(barChart(tCount, total, topTypes, function () { return "var(--orange)"; }));
+
+    // rarest spotlight
+    if (unusuals.length) {
+      root.appendChild(el("h2", "stats-h", "Unusual spotlight"));
+      const tiles = el("div", "bp-tiles");
+      unusuals.forEach(function (it) { tiles.appendChild(bpTile(it)); });
+      root.appendChild(tiles);
+    }
+
+    root.appendChild(el("p", "muted stats-note", "Item values aren't shown — pricing every quality/effect/killstreak combo reliably needs a dedicated price feed. Ask and I can wire backpack.tf in."));
+  } catch (e) {
+    root.innerHTML = "<p class='empty err'>Couldn't load stats (" + e.message + "). Is the inventory public and the Worker up?</p>";
+  }
+}
+
+function barChart(counts, total, order, colorFn) {
+  const wrap = el("div", "bar-chart");
+  const max = Math.max.apply(null, order.map(function (k) { return counts[k] || 0; }).concat([1]));
+  order.forEach(function (k) {
+    const n = counts[k] || 0;
+    if (!n) return;
+    const row = el("div", "bar-row");
+    row.appendChild(el("span", "bar-label", k));
+    const track = el("div", "bar-track");
+    const fill = el("div", "bar-fill");
+    fill.style.width = Math.max(2, (n / max) * 100) + "%";
+    fill.style.background = colorFn(k);
+    track.appendChild(fill);
+    row.appendChild(track);
+    row.appendChild(el("span", "bar-val", n + " (" + ((n / total) * 100).toFixed(1) + "%)"));
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+
+/* ---------- Loadout Builder ---------- */
+function renderBuilder() {
+  const controls = document.getElementById("builder-controls");
+  const preview = document.getElementById("builder-preview");
+  const shareBox = document.getElementById("builder-share");
+  if (!controls || !preview) return;
+
+  const classes = Object.keys(WEAPONS);
+  const params = new URLSearchParams(location.search);
+  const state = {
+    cls: params.get("c") && WEAPONS[params.get("c")] ? params.get("c") : classes[0],
+    p: params.get("p") || "",
+    s: params.get("s") || "",
+    m: params.get("m") || "",
+    h: (params.get("h") || "").split("~").filter(Boolean),
+    n: params.get("n") || ""
+  };
+
+  function opt(value, label, selected) {
+    const o = document.createElement("option");
+    o.value = value; o.textContent = label;
+    if (selected) o.selected = true;
+    return o;
+  }
+
+  function build() {
+    controls.innerHTML = "";
+
+    // class picker
+    const clsRow = el("div", "build-field");
+    clsRow.appendChild(el("label", "build-label", "Class"));
+    const clsBtns = el("div", "class-filter build-classes");
+    classes.forEach(function (c) {
+      const b = el("button", "filter-btn " + classSlug(c) + (c === state.cls ? " active" : ""), c);
+      b.style.setProperty("--accent", "var(--accent)");
+      b.addEventListener("click", function () {
+        if (state.cls === c) return;
+        state.cls = c; state.p = ""; state.s = ""; state.m = "";
+        build(); update();
+      });
+      clsBtns.appendChild(b);
+    });
+    clsRow.appendChild(clsBtns);
+    controls.appendChild(clsRow);
+
+    // weapon slot selects
+    const w = WEAPONS[state.cls];
+    [["p", "Primary", w.primary], ["s", "Secondary", w.secondary], ["m", "Melee", w.melee]].forEach(function (slot) {
+      const key = slot[0], pool = slot[2];
+      const field = el("div", "build-field");
+      field.appendChild(el("label", "build-label", slot[1]));
+      const sel = document.createElement("select");
+      sel.className = "build-select";
+      sel.appendChild(opt("", "— random / none —", !state[key]));
+      pool.forEach(function (it) { sel.appendChild(opt(it, it, state[key] === it)); });
+      sel.addEventListener("change", function () { state[key] = sel.value; update(); });
+      field.appendChild(sel);
+      controls.appendChild(field);
+    });
+
+    // cosmetics (two slots)
+    [0, 1].forEach(function (i) {
+      const field = el("div", "build-field");
+      field.appendChild(el("label", "build-label", "Cosmetic " + (i + 1)));
+      const sel = document.createElement("select");
+      sel.className = "build-select";
+      sel.appendChild(opt("", "— none —", !state.h[i]));
+      COSMETICS.forEach(function (it) { sel.appendChild(opt(it, it, state.h[i] === it)); });
+      sel.addEventListener("change", function () { state.h[i] = sel.value; update(); });
+      field.appendChild(sel);
+      controls.appendChild(field);
+    });
+
+    // name
+    const nameField = el("div", "build-field");
+    nameField.appendChild(el("label", "build-label", "Loadout name"));
+    const nameInput = document.createElement("input");
+    nameInput.className = "build-select"; nameInput.type = "text"; nameInput.maxLength = 40;
+    nameInput.placeholder = "My Sick Loadout"; nameInput.value = state.n;
+    nameInput.addEventListener("input", function () { state.n = nameInput.value; update(); });
+    nameField.appendChild(nameInput);
+    controls.appendChild(nameField);
+  }
+
+  function update() {
+    const items = [state.p, state.s, state.m].concat(state.h).filter(Boolean);
+    const lo = {
+      name: state.n || ("Custom " + state.cls),
+      class: state.cls,
+      image: "",
+      blurb: "Built in the loadout builder.",
+      items: items,
+      notes: ""
+    };
+    preview.innerHTML = "";
+    preview.appendChild(loadoutCard(lo));
+    drawShare();
+  }
+
+  function shareUrl() {
+    const q = new URLSearchParams();
+    q.set("c", state.cls);
+    if (state.p) q.set("p", state.p);
+    if (state.s) q.set("s", state.s);
+    if (state.m) q.set("m", state.m);
+    const hats = state.h.filter(Boolean);
+    if (hats.length) q.set("h", hats.join("~"));
+    if (state.n) q.set("n", state.n);
+    return location.origin + location.pathname + "?" + q.toString();
+  }
+
+  function drawShare() {
+    shareBox.innerHTML = "";
+    const btn = el("button", "btn btn-primary", "🔗 Copy share link");
+    const msg = el("span", "share-msg");
+    btn.addEventListener("click", function () {
+      const url = shareUrl();
+      navigator.clipboard.writeText(url).then(
+        function () { msg.textContent = "Copied!"; },
+        function () { msg.textContent = url; }
+      );
+    });
+    shareBox.appendChild(btn);
+    shareBox.appendChild(msg);
+  }
+
+  build();
+  update();
+}
+
 function renderCuratedBackpack(grid) {
   if (typeof BACKPACK === "undefined" || !BACKPACK.length) {
     grid.appendChild(el("p", "empty", "No items yet. Add some in js/funpools.js."));
