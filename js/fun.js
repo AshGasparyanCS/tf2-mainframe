@@ -91,6 +91,7 @@ function renderCrate() {
       const unusual = Math.random() < UNUSUAL_CHANCE;
       const grade = unusual ? { name: "★ Unusual ★", color: "#8650ac" } : rollGrade();
       const item = pick(CRATE_ITEMS);
+      if (window.SFX) SFX.unbox(unusual ? 3 : CRATE_GRADES.indexOf(grade));
 
       result.innerHTML = "";
       result.style.setProperty("--grade", grade.color);

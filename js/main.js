@@ -225,16 +225,99 @@ function renderSinglePost() {
   if (typeof renderComments === "function") renderComments(post.id);
 }
 
+// ---- sound effects (synthesized with Web Audio, no files needed) ----
+const SFX = (function () {
+  let ctx = null;
+  let enabled = true;
+  try { enabled = localStorage.getItem("sfx") !== "off"; } catch (e) {}
+  function ac() {
+    if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function note(freq, start, dur, vol, type) {
+    const c = ac(); if (!c) return;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || "triangle";
+    o.frequency.value = freq;
+    const t = c.currentTime + start;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  return {
+    isOn: function () { return enabled; },
+    toggle: function () {
+      enabled = !enabled;
+      try { localStorage.setItem("sfx", enabled ? "on" : "off"); } catch (e) {}
+      if (enabled) this.click();
+      return enabled;
+    },
+    click: function () { if (enabled) note(660, 0, 0.06, 0.05, "square"); },
+    unbox: function (level) {
+      if (!enabled) return;
+      const base = [523.25, 659.25, 783.99, 1046.5];
+      const n = Math.min(4, 2 + (level || 0));
+      for (let i = 0; i < n; i++) note(base[i], i * 0.07, 0.2, 0.06, "triangle");
+      if (level >= 3) { // unusual sparkle
+        for (let i = 0; i < 6; i++) note(1568 + i * 130, 0.32 + i * 0.05, 0.16, 0.04, "sine");
+      }
+    }
+  };
+})();
+window.SFX = SFX;
+
 // ---- shared chrome (runs on every page) ----
 (function initChrome() {
-  document.addEventListener("DOMContentLoaded", () => {
+  // apply saved theme immediately (the inline <head> script also does this)
+  try { var th = localStorage.getItem("theme"); if (th) document.documentElement.setAttribute("data-theme", th); } catch (e) {}
+
+  document.addEventListener("DOMContentLoaded", function () {
     const yr = document.getElementById("year");
     if (yr) yr.textContent = new Date().getFullYear();
 
     const toggle = document.getElementById("nav-toggle");
     const nav = document.getElementById("site-nav");
-    if (toggle && nav) {
-      toggle.addEventListener("click", () => nav.classList.toggle("open"));
+    if (toggle && nav) toggle.addEventListener("click", function () { nav.classList.toggle("open"); });
+
+    // inject theme + sound toggle buttons into the header
+    const header = document.querySelector(".site-header");
+    if (header) {
+      const tools = document.createElement("div");
+      tools.className = "header-tools";
+
+      const themeBtn = document.createElement("button");
+      themeBtn.className = "icon-btn";
+      themeBtn.setAttribute("aria-label", "Toggle dark mode");
+      const paintTheme = function () {
+        themeBtn.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️" : "🌙";
+      };
+      paintTheme();
+      themeBtn.addEventListener("click", function () {
+        const dark = document.documentElement.getAttribute("data-theme") === "dark";
+        const next = dark ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        paintTheme();
+      });
+
+      const soundBtn = document.createElement("button");
+      soundBtn.className = "icon-btn";
+      soundBtn.setAttribute("aria-label", "Toggle sound");
+      const paintSound = function () { soundBtn.textContent = SFX.isOn() ? "🔊" : "🔇"; };
+      paintSound();
+      soundBtn.addEventListener("click", function () { SFX.toggle(); paintSound(); });
+
+      tools.appendChild(themeBtn);
+      tools.appendChild(soundBtn);
+      if (toggle) header.insertBefore(tools, toggle); else header.appendChild(tools);
     }
+
+    // little click blip on buttons
+    document.addEventListener("click", function (e) {
+      if (e.target.closest(".btn, .filter-btn, .icon-btn")) SFX.click();
+    });
   });
 })();
