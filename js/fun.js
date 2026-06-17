@@ -138,9 +138,113 @@ function renderCrate() {
 }
 
 /* ---------- Backpack Showcase ---------- */
+// rarity order (rarest first) for sorting + filter buttons
+const QUALITY_RANK = ["Unusual", "Collector's", "Genuine", "Strange", "Haunted",
+  "Vintage", "Decorated Weapon", "Unique", "Normal"];
+const ICON_BASE = "https://community.cloudflare.steamstatic.com/economy/image/";
+
 function renderBackpack() {
   const grid = document.getElementById("backpack-grid");
   if (!grid) return;
+  const live = (typeof STEAM_WORKER_URL !== "undefined" && STEAM_WORKER_URL && typeof STEAM_ID !== "undefined" && STEAM_ID);
+  if (live) {
+    grid.innerHTML = "<p class='empty'>Loading inventory from Steam…</p>";
+    renderLiveBackpack(grid).catch(function (e) {
+      grid.innerHTML = "<p class='empty err'>Couldn't load live inventory (" + e.message + "). Showing curated list.</p>";
+      const wrap = el("div", "backpack-grid");
+      grid.appendChild(wrap);
+      renderCuratedBackpack(wrap);
+    });
+  } else {
+    renderCuratedBackpack(grid);
+  }
+}
+
+async function renderLiveBackpack(grid) {
+  const res = await fetch(STEAM_WORKER_URL + "?steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  if (!data.descriptions || !data.assets) throw new Error("no inventory data");
+
+  // count duplicates per item class
+  const counts = {};
+  data.assets.forEach(function (a) {
+    var k = a.classid + "_" + a.instanceid;
+    counts[k] = (counts[k] || 0) + 1;
+  });
+
+  const items = data.descriptions.map(function (d) {
+    var quality = "Unique";
+    (d.tags || []).forEach(function (t) { if (t.category === "Quality") quality = t.localized_tag_name; });
+    return {
+      name: d.market_name || d.name,
+      color: "#" + (d.name_color || "7d6d00"),
+      quality: quality,
+      count: counts[d.classid + "_" + d.instanceid] || 1,
+      icon: d.icon_url_large || d.icon_url,
+      market: d.marketable ? d.market_hash_name : null
+    };
+  });
+
+  const rank = function (q) { var i = QUALITY_RANK.indexOf(q); return i < 0 ? 99 : i; };
+  items.sort(function (a, b) { return rank(a.quality) - rank(b.quality) || a.name.localeCompare(b.name); });
+
+  // build filter bar (All + each quality present, rarest first)
+  const present = QUALITY_RANK.filter(function (q) { return items.some(function (it) { return it.quality === q; }); });
+  const host = grid.parentNode;
+  const filterBar = el("div", "class-filter bp-filter");
+  host.insertBefore(filterBar, grid);
+
+  function draw(q) {
+    grid.innerHTML = "";
+    var list = q === "All" ? items : items.filter(function (it) { return it.quality === q; });
+    grid.appendChild(buildCount(list.length, items.length));
+    var tiles = el("div", "bp-tiles");
+    list.forEach(function (it) { tiles.appendChild(bpTile(it)); });
+    grid.appendChild(tiles);
+  }
+
+  ["All"].concat(present).forEach(function (q, i) {
+    var b = el("button", "filter-btn" + (i === 0 ? " active" : ""), q);
+    if (q !== "All") b.style.setProperty("--accent", QUALITY_COLORS[q] || "#b2b2b2");
+    b.addEventListener("click", function () {
+      filterBar.querySelectorAll(".filter-btn").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      draw(q);
+    });
+    filterBar.appendChild(b);
+  });
+
+  draw("All");
+}
+
+function buildCount(shown, total) {
+  return el("p", "bp-count-line", "Showing <strong>" + shown + "</strong> of " + total + " items.");
+}
+
+function bpTile(it) {
+  var tag = it.market ? document.createElement("a") : document.createElement("div");
+  tag.className = "bp-tile";
+  tag.style.setProperty("--q", it.color);
+  tag.title = it.name + (it.count > 1 ? " (x" + it.count + ")" : "");
+  if (it.market) {
+    tag.href = "https://steamcommunity.com/market/listings/440/" + encodeURIComponent(it.market);
+    tag.target = "_blank";
+    tag.rel = "noopener noreferrer";
+  }
+  if (it.icon) {
+    var img = document.createElement("img");
+    img.src = ICON_BASE + it.icon + "/96fx96f";
+    img.alt = it.name;
+    img.loading = "lazy";
+    tag.appendChild(img);
+  }
+  if (it.count > 1) tag.appendChild(el("span", "bp-tile-count", "x" + it.count));
+  tag.appendChild(el("span", "bp-tile-name", it.name));
+  return tag;
+}
+
+function renderCuratedBackpack(grid) {
   if (typeof BACKPACK === "undefined" || !BACKPACK.length) {
     grid.appendChild(el("p", "empty", "No items yet. Add some in js/funpools.js."));
     return;

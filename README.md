@@ -85,9 +85,20 @@ The **Fun** nav section has three toys:
   `BACKPACK` list in `js/funpools.js`** with your real grails (name, quality,
   optional effect/value/note).
 
-> Live Steam inventory can't be pulled directly on a static site (Steam's API
-> has no CORS headers), so the backpack is a hand-curated list. That also means
-> you control exactly what's shown.
+### Live backpack (optional)
+
+By default the backpack shows the curated `BACKPACK` list. To pull your **real
+Steam inventory** live (icons, quality colors, filters), deploy the tiny
+Cloudflare Worker in `cloudflare-worker.js` — full steps are in the comment at
+the top of that file. In short:
+
+1. Free Cloudflare account → Workers & Pages → Create Worker → paste
+   `cloudflare-worker.js` → Deploy.
+2. Copy the Worker URL into `STEAM_WORKER_URL` in `js/config.js`
+   (`STEAM_ID` is already set), then publish.
+
+The Worker is just a CORS proxy — a static site can't call Steam directly
+because Steam sends no CORS headers. Your inventory must be **public**.
 
 ## Files
 

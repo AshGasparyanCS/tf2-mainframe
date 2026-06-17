@@ -577,6 +577,52 @@ code {
 .bp-value { font-weight: bold; color: var(--ink); font-size: 0.9rem; margin-top: 0.3rem; }
 .bp-note { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.3rem; }
 
+/* ---------- fun: live backpack tiles ---------- */
+.bp-filter { margin-bottom: 0.5rem; }
+.bp-count-line { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 1rem; }
+.bp-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 0.7rem;
+}
+.bp-tile {
+  --q: #b2b2b2;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  border-bottom: 4px solid var(--q);
+  border-radius: 5px;
+  padding: 0.4rem 0.3rem 0.5rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  overflow: hidden;
+}
+a.bp-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow); text-decoration: none; }
+.bp-tile img { width: 72px; height: 72px; object-fit: contain; }
+.bp-tile-count {
+  position: absolute; top: 4px; right: 5px;
+  background: rgba(0,0,0,0.6); color: #fff;
+  font-size: 0.65rem; font-weight: bold;
+  padding: 0.05rem 0.3rem; border-radius: 3px;
+}
+.bp-tile-name {
+  margin-top: 0.3rem;
+  font-size: 0.62rem;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--q);
+  font-weight: bold;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.empty.err { color: var(--red-dark); }
+
 /* ---------- footer ---------- */
 .site-footer {
   margin-top: 3rem;
