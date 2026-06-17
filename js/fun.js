@@ -323,10 +323,31 @@ async function renderStats() {
       root.appendChild(tiles);
     }
 
-    root.appendChild(el("p", "muted stats-note", "Item values aren't shown — pricing every quality/effect/killstreak combo reliably needs a dedicated price feed. Ask and I can wire backpack.tf in."));
+    loadBackpackValue(root);
   } catch (e) {
     root.innerHTML = "<p class='empty err'>Couldn't load stats (" + e.message + "). Is the inventory public and the Worker up?</p>";
   }
+}
+
+function loadBackpackValue(root) {
+  fetch(STEAM_WORKER_URL + "?value=1&steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" })
+    .then(function (r) { return r.json(); })
+    .then(function (v) {
+      if (!v || v.error || v.refined == null) return;
+      const keys = v.keysRate ? Math.round(v.refined / v.keysRate) : null;
+      const usd = v.usdPerRef ? v.refined * v.usdPerRef : null;
+      const banner = el("div", "value-banner");
+      banner.appendChild(el("div", "value-lbl", "Estimated backpack value"));
+      const main = el("div", "value-main");
+      if (keys != null) main.appendChild(el("span", "value-keys", keys.toLocaleString() + " keys"));
+      if (usd != null) main.appendChild(el("span", "value-usd", "≈ $" + usd.toLocaleString(undefined, { maximumFractionDigits: 0 })));
+      banner.appendChild(main);
+      let sub = "≈ " + Math.round(v.refined).toLocaleString() + " refined";
+      if (v.updated) sub += " · via backpack.tf, updated " + new Date(v.updated * 1000).toLocaleDateString();
+      banner.appendChild(el("div", "value-sub", sub));
+      root.insertBefore(banner, root.firstChild);
+    })
+    .catch(function () {});
 }
 
 function barChart(counts, total, order, colorFn) {
