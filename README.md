@@ -100,6 +100,15 @@ the top of that file. In short:
 The Worker is just a CORS proxy — a static site can't call Steam directly
 because Steam sends no CORS headers. Your inventory must be **public**.
 
+## Arcade games (Fun section)
+
+- **Mann Co. Clicker** (`clicker.html`) — idle game, saves to localStorage. No setup.
+- **Guess the Price** (`guess.html`) — needs the Worker's `?prices` route (redeploy
+  `cloudflare-worker.js`) + the `BPTF_KEY` secret.
+- **Hat Battles** (`battles.html`) and **Pixel Canvas** (`canvas.html`) — need the
+  tables in `supabase-games.sql` (run it once in the Supabase SQL Editor). They use
+  the same Supabase project as the comments.
+
 ## Files
 
 | File          | What it is                                  |
