@@ -167,7 +167,7 @@ h1, h2, h3 {
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  margin-top: 1.6rem;
+  margin: 0 auto 1rem;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(233, 225, 210, 0.25);
   border-radius: 999px;

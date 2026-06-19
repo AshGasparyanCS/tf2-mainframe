@@ -272,7 +272,10 @@ window.SFX = SFX;
 // ---- live Steam status widget (home page) ----
 function renderSteamStatus() {
   const box = document.getElementById("steam-status");
-  if (!box || typeof STEAM_WORKER_URL === "undefined" || !STEAM_WORKER_URL) return;
+  if (!box) return;
+  // use config.js values if present, else fall back to the known public ones
+  const base = (typeof STEAM_WORKER_URL !== "undefined" && STEAM_WORKER_URL) ? STEAM_WORKER_URL : "https://tf2-backpack.ashotg2.workers.dev";
+  const sid = (typeof STEAM_ID !== "undefined" && STEAM_ID) ? STEAM_ID : "76561198292026612";
   const STATES = { 0: "Offline", 1: "Online", 2: "Busy", 3: "Away", 4: "Snooze", 5: "Looking to trade", 6: "Looking to play" };
   function ago(ts) {
     if (!ts) return "";
@@ -282,7 +285,7 @@ function renderSteamStatus() {
     return Math.floor(s / 86400) + "d ago";
   }
   function load() {
-    fetch(STEAM_WORKER_URL + "?status=1&steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" })
+    fetch(base + "?status=1&steamid=" + encodeURIComponent(sid), { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d || d.error || typeof d.state !== "number") { box.style.display = "none"; return; }
@@ -364,5 +367,16 @@ window.renderSteamStatus = renderSteamStatus;
     document.addEventListener("click", function (e) {
       if (e.target.closest(".btn, .filter-btn, .icon-btn")) SFX.click();
     });
+
+    // live Steam status pill in the footer (every page)
+    const footer = document.querySelector(".site-footer");
+    if (footer && !document.getElementById("steam-status")) {
+      const ss = document.createElement("div");
+      ss.className = "steam-status";
+      ss.id = "steam-status";
+      ss.style.display = "none";
+      footer.insertBefore(ss, footer.firstChild);
+    }
+    renderSteamStatus();
   });
 })();
