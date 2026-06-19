@@ -712,6 +712,123 @@ a.bp-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow); text-d
 .value-keys { font-family: var(--font-head); font-size: 2.4rem; line-height: 1; }
 .value-usd { font-family: var(--font-head); font-size: 1.4rem; opacity: 0.92; }
 .value-sub { font-size: 0.8rem; opacity: 0.85; }
+
+/* ---------- fun: clicker ---------- */
+.clicker-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; align-items: start; }
+.clicker-main { text-align: center; }
+.clicker-stats { margin-bottom: 1.5rem; }
+.clicker-total { font-family: var(--font-head); font-size: 2.6rem; color: var(--red-dark); }
+.clicker-rates { display: flex; gap: 1.5rem; justify-content: center; color: var(--ink-soft); margin-top: 0.3rem; }
+.clicker-btn {
+  position: relative;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  border: 6px solid var(--orange-dark);
+  background: radial-gradient(circle at 35% 30%, #f0c27a, var(--orange));
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: grid; place-items: center;
+  transition: transform 0.05s ease;
+  user-select: none;
+}
+.clicker-btn:active { transform: scale(0.95); }
+.clicker-coin { font-size: 5rem; line-height: 1; display: block; }
+.clicker-tap { font-family: var(--font-head); text-transform: uppercase; color: var(--btn-ink); font-size: 1.1rem; }
+.click-float {
+  position: absolute; left: 50%; top: 20%;
+  transform: translateX(-50%);
+  font-family: var(--font-head); font-size: 1.4rem; color: #fff;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.4);
+  pointer-events: none;
+  animation: float-up 0.7s ease-out forwards;
+}
+@keyframes float-up { to { top: -10%; opacity: 0; } }
+.clicker-reset { margin-top: 1.5rem; color: var(--ink); border-color: var(--ink); }
+.clicker-shop { display: flex; flex-direction: column; gap: 0.5rem; }
+.shop-title { color: var(--red-dark); margin: 0 0 0.3rem; }
+.shop-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  text-align: left;
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+.shop-item:hover { border-left-color: var(--red); }
+.shop-item.disabled { opacity: 0.5; cursor: not-allowed; }
+.shop-name { font-family: var(--font-head); font-size: 0.95rem; display: block; }
+.shop-name em { color: var(--ink-soft); font-style: normal; font-size: 0.8rem; }
+.shop-desc { font-size: 0.8rem; color: var(--ink-soft); }
+.shop-cost { font-family: var(--font-head); color: var(--orange-dark); white-space: nowrap; }
+@media (max-width: 720px) { .clicker-layout { grid-template-columns: 1fr; } }
+
+/* ---------- fun: guess the price ---------- */
+.guess-game { max-width: 460px; margin: 0 auto; }
+.guess-score { text-align: center; color: var(--ink-soft); margin-bottom: 1rem; }
+.guess-card {
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.guess-img { width: 120px; height: 120px; object-fit: contain; }
+.guess-name { font-family: var(--font-head); font-size: 1.3rem; color: var(--ink); margin: 0.5rem 0 1rem; }
+.guess-label { display: block; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.4rem; }
+.guess-input-row { display: flex; gap: 0.5rem; justify-content: center; }
+.guess-input { max-width: 160px; text-align: center; }
+.guess-result { margin-top: 1.1rem; }
+.guess-verdict { font-family: var(--font-head); font-size: 1.2rem; color: var(--red-dark); }
+.guess-actual { color: var(--ink-soft); margin-top: 0.3rem; font-size: 0.92rem; }
+.guess-next { margin-top: 1rem; color: var(--ink); border-color: var(--ink); }
+
+/* ---------- fun: hat battles ---------- */
+.battle-pair { display: flex; align-items: center; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+.battle-card {
+  width: 220px;
+  background: var(--cream-card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 1.4rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.08s ease, border-color 0.08s ease;
+}
+.battle-card:hover { transform: translateY(-4px); border-color: var(--red); }
+.battle-card img { width: 120px; height: 120px; object-fit: contain; }
+.battle-name { font-family: var(--font-head); font-size: 1.05rem; color: var(--ink); margin-top: 0.5rem; }
+.battle-vs { font-family: var(--font-head); font-size: 1.6rem; color: var(--red-dark); }
+.battle-board { max-width: 560px; margin: 2.5rem auto 0; }
+.battle-rank { padding-left: 1.5rem; }
+.battle-rank li { padding: 0.4rem 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; }
+.rank-name { font-weight: bold; }
+.rank-rate { color: var(--ink-soft); white-space: nowrap; }
+
+/* ---------- fun: pixel canvas ---------- */
+.canvas-section { text-align: center; }
+.palette { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.swatch { width: 30px; height: 30px; border-radius: 5px; border: 2px solid var(--line); cursor: pointer; }
+.swatch.active { border-color: var(--ink); transform: scale(1.15); box-shadow: 0 0 0 2px var(--orange); }
+.pixel-grid {
+  display: grid;
+  grid-template-columns: repeat(40, 1fr);
+  width: min(560px, 92vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border: 2px solid var(--ink);
+  background: #fff;
+}
+.pixel { background: #f3ecdd; }
+.pixel:hover { outline: 1px solid var(--ink); outline-offset: -1px; cursor: crosshair; }
+.canvas-status { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.8rem; }
 @media (max-width: 600px) {
   .bar-row { grid-template-columns: 90px 1fr; }
   .bar-val { display: none; }

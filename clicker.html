@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mann Co. Clicker — Mann Co. Mainframe</title>
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Mann Co. Mainframe" />
+  <meta property="og:title" content="Mann Co. Clicker — Mann Co. Mainframe" />
+  <meta property="og:description" content="Click to mine metal, buy upgrades, get rich. An idle game." />
+  <meta property="og:url" content="https://ashgasparyancs.github.io/tf2-mainframe/clicker.html" />
+  <meta property="og:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">TF</span>
+      <span class="brand-text">Mann Co. <em>Mainframe</em></span>
+    </a>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html">Home</a>
+      <a href="loadouts.html">Loadouts</a>
+      <a href="blog.html">Blog</a>
+      <a href="fun.html" class="active">Fun</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <h1>Mann Co. Clicker</h1>
+      <p class="lead">Mine metal. Buy machines. Mine more metal. There is no war but the grind.</p>
+    </section>
+
+    <section class="section clicker-layout">
+      <div class="clicker-main">
+        <div class="clicker-stats">
+          <div class="clicker-total"><span id="clk-metal">0</span> refined</div>
+          <div class="clicker-rates">
+            <span><strong id="clk-perclick">1</strong> / click</span>
+            <span><strong id="clk-persec">0</strong> / sec</span>
+          </div>
+        </div>
+        <button class="clicker-btn" id="clk-btn" aria-label="Mine metal">
+          <span class="clicker-coin">⚙️</span>
+          <span class="clicker-tap">Mine!</span>
+        </button>
+        <button class="btn btn-ghost clicker-reset" id="clk-reset">Reset save</button>
+      </div>
+      <div class="clicker-shop" id="clk-shop"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built in a respawn room. Not affiliated with Valve. © <span id="year"></span></p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/clicker.js"></script>
+  <script>renderClicker();</script>
+</body>
+</html>

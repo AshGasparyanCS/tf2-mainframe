@@ -71,6 +71,48 @@ export default {
       }
     }
 
+    // ---- price map route: /?prices=1 (for the Guess the Price game) ----
+    if (url.searchParams.get("prices")) {
+      if (!env || !env.BPTF_KEY) {
+        return json({ error: "BPTF_KEY not set in Worker variables" }, 400);
+      }
+      try {
+        const [pR, cR] = await Promise.all([
+          fetch("https://backpack.tf/api/IGetPrices/v4?raw=1&key=" + env.BPTF_KEY),
+          fetch("https://backpack.tf/api/IGetCurrencies/v1?key=" + env.BPTF_KEY)
+        ]);
+        const p = await pR.json();
+        const c = await cR.json();
+        const cur = (c.response && c.response.currencies) || {};
+        const keysRate = cur.keys && cur.keys.price && cur.keys.price.value;
+        const items = (p.response && p.response.items) || {};
+        const craft0 = function (qd) {
+          try { const cf = qd.Tradable.Craftable; return Array.isArray(cf) ? cf[0] : cf["0"]; }
+          catch (e) { return null; }
+        };
+        const toRef = function (e) {
+          if (!e || e.value == null) return null;
+          if (e.currency === "keys") return e.value * keysRate;
+          if (e.currency === "metal") return e.value;
+          return null;
+        };
+        const out = {};
+        for (const name in items) {
+          const pr = items[name].prices || {};
+          const u = toRef(craft0(pr["6"] || {}));
+          const s = toRef(craft0(pr["11"] || {}));
+          if (u == null && s == null) continue;
+          const o = {};
+          if (u != null) o.u = Math.round(u * 100) / 100;
+          if (s != null) o.s = Math.round(s * 100) / 100;
+          out[name] = o;
+        }
+        return json({ prices: out, keysRate: keysRate }, 200);
+      } catch (e) {
+        return json({ error: "prices failed: " + String(e) }, 502);
+      }
+    }
+
     const assets = [];
     const descById = {};
     let start = "";

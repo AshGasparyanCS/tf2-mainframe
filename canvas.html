@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Canvas — Mann Co. Mainframe</title>
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Mann Co. Mainframe" />
+  <meta property="og:title" content="Pixel Canvas — Mann Co. Mainframe" />
+  <meta property="og:description" content="A shared pixel grid. Place pixels with everyone else who visits." />
+  <meta property="og:url" content="https://ashgasparyancs.github.io/tf2-mainframe/canvas.html" />
+  <meta property="og:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ashgasparyancs.github.io/tf2-mainframe/assets/og-image.png" />
+</head>
+<body>
+  <div class="paper-grain"></div>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">TF</span>
+      <span class="brand-text">Mann Co. <em>Mainframe</em></span>
+    </a>
+    <nav class="site-nav" id="site-nav">
+      <a href="index.html">Home</a>
+      <a href="loadouts.html">Loadouts</a>
+      <a href="blog.html">Blog</a>
+      <a href="fun.html" class="active">Fun</a>
+      <a href="about.html">About</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <h1>Pixel Canvas</h1>
+      <p class="lead">Pick a color, place pixels. Everyone shares the same 40×40 grid — updates live.</p>
+    </section>
+
+    <section class="section canvas-section">
+      <div class="palette" id="palette"></div>
+      <div class="pixel-grid" id="pixel-grid"></div>
+      <p class="canvas-status" id="canvas-status"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built in a respawn room. Not affiliated with Valve. © <span id="year"></span></p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/fun.js"></script>
+  <script>renderCanvas();</script>
+</body>
+</html>

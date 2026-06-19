@@ -370,6 +370,280 @@ function barChart(counts, total, order, colorFn) {
   return wrap;
 }
 
+/* ---------- Hat Battles ---------- */
+function sbHeaders() {
+  return { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json" };
+}
+
+async function renderBattles() {
+  const arena = document.getElementById("battle-arena");
+  const board = document.getElementById("battle-board");
+  if (!arena) return;
+  if (typeof STEAM_WORKER_URL === "undefined" || !STEAM_WORKER_URL) {
+    arena.innerHTML = "<p class='empty'>Needs the Worker configured.</p>"; return;
+  }
+  let pool = [];
+  try {
+    const res = await fetch(STEAM_WORKER_URL + "?steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" });
+    const inv = await res.json();
+    if (!inv.descriptions) throw new Error("no inventory");
+    const seen = {};
+    inv.descriptions.forEach(function (d) {
+      let type = "";
+      (d.tags || []).forEach(function (t) { if (t.category === "Type") type = t.localized_tag_name; });
+      if (type !== "Cosmetic") return;
+      const name = d.market_name || d.name;
+      if (seen[name]) return; seen[name] = 1;
+      pool.push({ name: name, icon: d.icon_url_large || d.icon_url });
+    });
+    if (pool.length < 2) throw new Error("not enough cosmetics");
+  } catch (e) {
+    arena.innerHTML = "<p class='empty err'>Couldn't load hats (" + e.message + ").</p>"; return;
+  }
+
+  function twoHats() {
+    const a = Math.floor(Math.random() * pool.length);
+    let b = Math.floor(Math.random() * pool.length);
+    while (b === a) b = Math.floor(Math.random() * pool.length);
+    return [pool[a], pool[b]];
+  }
+
+  function hatCard(h, onPick) {
+    const c = el("div", "battle-card");
+    if (h.icon) { const img = document.createElement("img"); img.src = ICON_BASE + h.icon + "/120fx120f"; img.alt = h.name; c.appendChild(img); }
+    c.appendChild(el("div", "battle-name", h.name));
+    c.addEventListener("click", function () { onPick(); });
+    return c;
+  }
+
+  async function vote(winner, loser) {
+    try {
+      await fetch(SUPABASE_URL + "/rest/v1/rpc/vote_hat", {
+        method: "POST", headers: sbHeaders(), body: JSON.stringify({ w: winner, l: loser })
+      });
+    } catch (e) {}
+  }
+
+  async function loadBoard() {
+    if (!board) return;
+    try {
+      const res = await fetch(SUPABASE_URL + "/rest/v1/hat_stats?select=name,wins,battles&order=wins.desc&limit=200", { headers: sbHeaders() });
+      if (!res.ok) return;
+      let rows = await res.json();
+      rows = rows.filter(function (r) { return r.battles >= 3; })
+        .map(function (r) { r.rate = r.wins / r.battles; return r; })
+        .sort(function (a, b) { return b.rate - a.rate || b.battles - a.battles; })
+        .slice(0, 10);
+      board.innerHTML = "<h2 class='stats-h'>Top hats</h2>";
+      if (!rows.length) { board.appendChild(el("p", "muted", "Not enough votes yet — keep battling!")); return; }
+      const ol = el("ol", "battle-rank");
+      rows.forEach(function (r) {
+        const li = el("li");
+        li.innerHTML = "<span class='rank-name'>" + r.name + "</span><span class='rank-rate'>" +
+          Math.round(r.rate * 100) + "% (" + r.wins + "/" + r.battles + ")</span>";
+        ol.appendChild(li);
+      });
+      board.appendChild(ol);
+    } catch (e) {}
+  }
+
+  function round() {
+    const pair = twoHats();
+    arena.innerHTML = "";
+    const wrap = el("div", "battle-pair");
+    wrap.appendChild(hatCard(pair[0], function () { vote(pair[0].name, pair[1].name).then(loadBoard); round(); }));
+    wrap.appendChild(el("div", "battle-vs", "VS"));
+    wrap.appendChild(hatCard(pair[1], function () { vote(pair[1].name, pair[0].name).then(loadBoard); round(); }));
+    arena.appendChild(wrap);
+  }
+
+  round();
+  loadBoard();
+}
+
+/* ---------- Pixel Canvas ---------- */
+function renderCanvas() {
+  const gridEl = document.getElementById("pixel-grid");
+  const paletteEl = document.getElementById("palette");
+  const statusEl = document.getElementById("canvas-status");
+  if (!gridEl) return;
+  const SIZE = 40;
+  const COLORS = ["#2a2622", "#ffffff", "#b8383b", "#cf7336", "#e0b341", "#6e9b3a",
+    "#4a8c8c", "#5885a2", "#8650ac", "#d32ce6", "#7a5a3a", "#b0b0b0"];
+  let current = COLORS[2];
+
+  const configured = (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL && SUPABASE_URL.indexOf("http") === 0 && SUPABASE_URL.indexOf("PASTE") < 0);
+
+  // palette
+  COLORS.forEach(function (col, i) {
+    const sw = document.createElement("button");
+    sw.className = "swatch" + (i === 2 ? " active" : "");
+    sw.style.background = col;
+    sw.addEventListener("click", function () {
+      current = col;
+      paletteEl.querySelectorAll(".swatch").forEach(function (x) { x.classList.remove("active"); });
+      sw.classList.add("active");
+    });
+    paletteEl.appendChild(sw);
+  });
+
+  // grid
+  const cells = {};
+  for (let y = 0; y < SIZE; y++) {
+    for (let x = 0; x < SIZE; x++) {
+      const c = document.createElement("div");
+      c.className = "pixel";
+      c.dataset.x = x; c.dataset.y = y;
+      c.addEventListener("click", function () { place(x, y, c); });
+      gridEl.appendChild(c);
+      cells[x + "_" + y] = c;
+    }
+  }
+
+  function paint(list) {
+    list.forEach(function (p) {
+      const c = cells[p.x + "_" + p.y];
+      if (c) c.style.background = p.color;
+    });
+  }
+
+  async function load() {
+    if (!configured) return;
+    try {
+      const res = await fetch(SUPABASE_URL + "/rest/v1/pixels?select=x,y,color", { headers: sbHeaders() });
+      if (res.ok) paint(await res.json());
+    } catch (e) {}
+  }
+
+  async function place(x, y, cell) {
+    cell.style.background = current; // optimistic
+    if (!configured) { if (statusEl) statusEl.textContent = "Demo mode — set up Supabase to make it shared."; return; }
+    const last = Number(localStorage.getItem("px_last") || 0);
+    if (Date.now() - last < 500) return;
+    localStorage.setItem("px_last", String(Date.now()));
+    try {
+      await fetch(SUPABASE_URL + "/rest/v1/pixels?on_conflict=x,y", {
+        method: "POST",
+        headers: Object.assign(sbHeaders(), { Prefer: "resolution=merge-duplicates,return=minimal" }),
+        body: JSON.stringify({ x: x, y: y, color: current })
+      });
+    } catch (e) {}
+  }
+
+  load();
+  if (configured) setInterval(load, 4000);
+  else if (statusEl) statusEl.textContent = "Demo mode — pixels are local until Supabase tables are set up.";
+}
+
+/* ---------- Guess the Price ---------- */
+async function renderGuess() {
+  const root = document.getElementById("guess-game");
+  if (!root) return;
+  if (typeof STEAM_WORKER_URL === "undefined" || !STEAM_WORKER_URL) {
+    root.innerHTML = "<p class='empty'>This game needs the Cloudflare Worker + backpack.tf key configured.</p>";
+    return;
+  }
+  try {
+    const [invRes, priceRes] = await Promise.all([
+      fetch(STEAM_WORKER_URL + "?steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" }),
+      fetch(STEAM_WORKER_URL + "?prices=1&steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" })
+    ]);
+    const inv = await invRes.json();
+    const pd = await priceRes.json();
+    if (pd.error) throw new Error(pd.error);
+    if (!inv.descriptions || !pd.prices) throw new Error("missing data");
+    const priceMap = pd.prices;
+    const keysRate = pd.keysRate || 57;
+
+    // build playable items: Unique (exact name) + Strange (strip prefix), with icon + price
+    const seen = {};
+    const pool = [];
+    inv.descriptions.forEach(function (d) {
+      let quality = "Unique";
+      (d.tags || []).forEach(function (t) { if (t.category === "Quality") quality = t.localized_tag_name; });
+      const mname = d.market_name || d.name;
+      let base = null, ref = null;
+      if (quality === "Unique" && priceMap[mname] && priceMap[mname].u != null) {
+        base = mname; ref = priceMap[mname].u;
+      } else if (quality === "Strange" && mname.indexOf("Strange ") === 0) {
+        const b = mname.slice(8);
+        if (priceMap[b] && priceMap[b].s != null) { base = b; ref = priceMap[b].s; }
+      }
+      if (base == null || ref == null || ref < 0.11) return;
+      if (seen[mname]) return;
+      seen[mname] = 1;
+      pool.push({ name: mname, icon: d.icon_url_large || d.icon_url, ref: ref });
+    });
+
+    if (pool.length < 5) throw new Error("not enough priced items to play");
+
+    let score = 0, rounds = 0;
+    let best = 0; try { best = Number(localStorage.getItem("guess_best") || 0); } catch (e) {}
+
+    function refToKeys(r) { return (r / keysRate); }
+    function fmtVal(r) {
+      const k = refToKeys(r);
+      if (k >= 1) return k.toFixed(1) + " keys (" + r.toFixed(2) + " ref)";
+      return r.toFixed(2) + " ref";
+    }
+
+    function round() {
+      const item = pool[Math.floor(Math.random() * pool.length)];
+      root.innerHTML = "";
+      const scoreBar = el("div", "guess-score");
+      scoreBar.innerHTML = "Score: <strong>" + score + "</strong> &nbsp;·&nbsp; Round " + (rounds + 1) +
+        " &nbsp;·&nbsp; Best: " + best;
+      root.appendChild(scoreBar);
+
+      const card = el("div", "guess-card");
+      if (item.icon) {
+        const img = document.createElement("img");
+        img.src = ICON_BASE + item.icon + "/120fx120f";
+        img.alt = item.name; img.className = "guess-img";
+        card.appendChild(img);
+      }
+      card.appendChild(el("div", "guess-name", item.name));
+      card.appendChild(el("label", "guess-label", "Your guess (refined metal):"));
+      const inputRow = el("div", "guess-input-row");
+      const input = document.createElement("input");
+      input.type = "number"; input.min = "0"; input.step = "0.01";
+      input.className = "build-select guess-input"; input.placeholder = "e.g. 12.5";
+      const go = el("button", "btn btn-primary", "Guess");
+      inputRow.appendChild(input); inputRow.appendChild(go);
+      card.appendChild(inputRow);
+      const result = el("div", "guess-result");
+      card.appendChild(result);
+      root.appendChild(card);
+      input.focus();
+
+      function submit() {
+        const guess = parseFloat(input.value);
+        if (isNaN(guess) || guess < 0) { input.focus(); return; }
+        go.disabled = true; input.disabled = true;
+        const off = Math.abs(guess - item.ref) / item.ref;
+        const pts = Math.max(0, Math.round(100 * (1 - Math.min(1, off))));
+        score += pts; rounds++;
+        if (score > best) { best = score; try { localStorage.setItem("guess_best", String(best)); } catch (e) {} }
+        const verdict = pts >= 90 ? "Nailed it!" : pts >= 60 ? "Close!" : pts >= 30 ? "Not quite." : "Way off.";
+        result.innerHTML =
+          "<div class='guess-verdict'>" + verdict + " <strong>+" + pts + "</strong></div>" +
+          "<div class='guess-actual'>Actual: <strong>" + fmtVal(item.ref) + "</strong> &nbsp;·&nbsp; you guessed " + guess.toFixed(2) + " ref</div>";
+        const next = el("button", "btn btn-ghost guess-next", "Next item →");
+        next.addEventListener("click", round);
+        result.appendChild(next);
+        next.focus();
+      }
+      go.addEventListener("click", submit);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
+    }
+
+    root.innerHTML = "";
+    round();
+  } catch (e) {
+    root.innerHTML = "<p class='empty err'>Couldn't start the game (" + e.message + "). Needs the Worker's prices route + a public inventory.</p>";
+  }
+}
+
 /* ---------- Loadout Builder ---------- */
 function renderBuilder() {
   const controls = document.getElementById("builder-controls");
