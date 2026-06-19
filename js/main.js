@@ -300,7 +300,13 @@ function renderSteamStatus() {
         const txt = el("div", "ss-text");
         const line = el("div", "ss-line");
         line.appendChild(el("span", "ss-dot " + (inGame ? "ingame" : (d.state === 0 ? "offline" : "online"))));
-        const nm = el("span", "ss-name"); nm.textContent = d.name || ""; line.appendChild(nm);
+        const nm = document.createElement("a");
+        nm.className = "ss-name";
+        nm.href = "https://steamcommunity.com/profiles/" + sid;
+        nm.target = "_blank";
+        nm.rel = "noopener noreferrer";
+        nm.textContent = d.name || "";
+        line.appendChild(nm);
         txt.appendChild(line);
         const st = el("span", "ss-status");
         let label = inGame ? ("Playing " + d.gameName) : (STATES[d.state] || "Online");
