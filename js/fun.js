@@ -389,14 +389,22 @@ async function renderBattles() {
     if (!inv.descriptions) throw new Error("no inventory");
     const seen = {};
     inv.descriptions.forEach(function (d) {
-      let type = "";
-      (d.tags || []).forEach(function (t) { if (t.category === "Type") type = t.localized_tag_name; });
+      let type = "", quality = "Unique";
+      (d.tags || []).forEach(function (t) {
+        if (t.category === "Type") type = t.localized_tag_name;
+        if (t.category === "Quality") quality = t.localized_tag_name;
+      });
       if (type !== "Cosmetic") return;
       const name = d.market_name || d.name;
       if (seen[name]) return; seen[name] = 1;
-      pool.push({ name: name, icon: d.icon_url_large || d.icon_url });
+      pool.push({ name: name, icon: d.icon_url_large || d.icon_url, quality: quality });
     });
     if (pool.length < 2) throw new Error("not enough cosmetics");
+    // Cap to the most interesting hats (rarest first) so matchups repeat and
+    // the leaderboard actually fills up.
+    const qrank = function (q) { var i = QUALITY_RANK.indexOf(q); return i < 0 ? 99 : i; };
+    pool.sort(function (a, b) { return qrank(a.quality) - qrank(b.quality); });
+    pool = pool.slice(0, 50);
   } catch (e) {
     arena.innerHTML = "<p class='empty err'>Couldn't load hats (" + e.message + ").</p>"; return;
   }
@@ -430,7 +438,7 @@ async function renderBattles() {
       const res = await fetch(SUPABASE_URL + "/rest/v1/hat_stats?select=name,wins,battles&order=wins.desc&limit=200", { headers: sbHeaders() });
       if (!res.ok) return;
       let rows = await res.json();
-      rows = rows.filter(function (r) { return r.battles >= 3; })
+      rows = rows.filter(function (r) { return r.battles >= 1; })
         .map(function (r) { r.rate = r.wins / r.battles; return r; })
         .sort(function (a, b) { return b.rate - a.rate || b.battles - a.battles; })
         .slice(0, 10);
