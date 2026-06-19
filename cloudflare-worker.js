@@ -71,6 +71,44 @@ export default {
       }
     }
 
+    // ---- live status route: /?status=1 (for the home page widget) ----
+    // Needs a STEAM_KEY environment variable (your Steam Web API key).
+    if (url.searchParams.get("status")) {
+      if (!env || !env.STEAM_KEY) {
+        return json({ error: "STEAM_KEY not set in Worker variables" }, 400);
+      }
+      try {
+        const sR = await fetch("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=" + env.STEAM_KEY + "&steamids=" + steamid);
+        const s = await sR.json();
+        const pl = (s.response && s.response.players && s.response.players[0]) || {};
+        let totalHours = null;
+        if (pl.gameid) {
+          try {
+            const gR = await fetch("https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=" + env.STEAM_KEY + "&steamid=" + steamid + "&include_appinfo=0&appids_filter[0]=" + pl.gameid);
+            const g = await gR.json();
+            const games = (g.response && g.response.games) || [];
+            if (games[0] && typeof games[0].playtime_forever === "number") totalHours = Math.round(games[0].playtime_forever / 60);
+          } catch (e) {}
+        }
+        const body = JSON.stringify({
+          state: pl.personastate,
+          name: pl.personaname,
+          avatar: pl.avatarfull,
+          gameName: pl.gameextrainfo || null,
+          gameId: pl.gameid || null,
+          totalHours: totalHours,
+          lastlogoff: pl.lastlogoff || null
+        });
+        // short cache so it stays "live"
+        return new Response(body, {
+          status: 200,
+          headers: { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json", "Cache-Control": "public, max-age=20" }
+        });
+      } catch (e) {
+        return json({ error: "status fetch failed: " + String(e) }, 502);
+      }
+    }
+
     // ---- price map route: /?prices=1 (for the Guess the Price game) ----
     if (url.searchParams.get("prices")) {
       if (!env || !env.BPTF_KEY) {

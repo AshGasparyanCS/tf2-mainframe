@@ -269,6 +269,51 @@ const SFX = (function () {
 })();
 window.SFX = SFX;
 
+// ---- live Steam status widget (home page) ----
+function renderSteamStatus() {
+  const box = document.getElementById("steam-status");
+  if (!box || typeof STEAM_WORKER_URL === "undefined" || !STEAM_WORKER_URL) return;
+  const STATES = { 0: "Offline", 1: "Online", 2: "Busy", 3: "Away", 4: "Snooze", 5: "Looking to trade", 6: "Looking to play" };
+  function ago(ts) {
+    if (!ts) return "";
+    const s = Math.floor(Date.now() / 1000) - ts;
+    if (s < 3600) return Math.max(1, Math.floor(s / 60)) + "m ago";
+    if (s < 86400) return Math.floor(s / 3600) + "h ago";
+    return Math.floor(s / 86400) + "d ago";
+  }
+  function load() {
+    fetch(STEAM_WORKER_URL + "?status=1&steamid=" + encodeURIComponent(STEAM_ID), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || d.error || typeof d.state !== "number") { box.style.display = "none"; return; }
+        const inGame = !!d.gameName;
+        box.style.display = "";
+        box.innerHTML = "";
+        if (d.avatar) {
+          const im = document.createElement("img");
+          im.className = "ss-avatar"; im.src = d.avatar; im.alt = "";
+          box.appendChild(im);
+        }
+        const txt = el("div", "ss-text");
+        const line = el("div", "ss-line");
+        line.appendChild(el("span", "ss-dot " + (inGame ? "ingame" : (d.state === 0 ? "offline" : "online"))));
+        const nm = el("span", "ss-name"); nm.textContent = d.name || ""; line.appendChild(nm);
+        txt.appendChild(line);
+        const st = el("span", "ss-status");
+        let label = inGame ? ("Playing " + d.gameName) : (STATES[d.state] || "Online");
+        if (inGame && d.totalHours != null) label += " · " + Number(d.totalHours).toLocaleString() + " hrs total";
+        else if (!inGame && d.state === 0 && d.lastlogoff) label += " · last online " + ago(d.lastlogoff);
+        st.textContent = label;
+        txt.appendChild(st);
+        box.appendChild(txt);
+      })
+      .catch(function () { box.style.display = "none"; });
+  }
+  load();
+  setInterval(load, 45000);
+}
+window.renderSteamStatus = renderSteamStatus;
+
 // ---- shared chrome (runs on every page) ----
 (function initChrome() {
   // apply saved theme immediately (the inline <head> script also does this)

@@ -162,6 +162,27 @@ h1, h2, h3 {
 .lead { font-size: 1.15rem; color: var(--on-dark); max-width: 60ch; }
 .hero-cta { margin-top: 1.8rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
 
+/* live steam status pill */
+.steam-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1.6rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(233, 225, 210, 0.25);
+  border-radius: 999px;
+  padding: 0.5rem 1rem 0.5rem 0.6rem;
+}
+.ss-avatar { width: 42px; height: 42px; border-radius: 6px; }
+.ss-text { text-align: left; line-height: 1.25; }
+.ss-line { display: flex; align-items: center; gap: 0.45rem; }
+.ss-dot { width: 10px; height: 10px; border-radius: 50%; background: #888; box-shadow: 0 0 6px currentColor; }
+.ss-dot.online { background: #6e9b3a; color: #6e9b3a; }
+.ss-dot.ingame { background: #90ba3c; color: #90ba3c; }
+.ss-dot.offline { background: #888; color: transparent; box-shadow: none; }
+.ss-name { font-family: var(--font-head); color: var(--on-dark); font-size: 0.95rem; }
+.ss-status { color: var(--on-dark); opacity: 0.85; font-size: 0.82rem; }
+
 /* ---------- buttons ---------- */
 .btn {
   display: inline-block;
